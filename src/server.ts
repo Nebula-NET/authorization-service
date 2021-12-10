@@ -4,7 +4,7 @@ import * as bodyParser from 'body-parser';
 import * as cors from 'cors'
 import {createConnection} from 'typeorm';
 import './cron';
-import { checkLanguage } from 'middlewares/checkLang';
+import { checkLanguage } from './middlewares/checkLang';
 
 const { createLogger, format, transports } = require("winston");
 const { combine, splat, timestamp, printf } = format;
