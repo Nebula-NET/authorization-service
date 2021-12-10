@@ -26,6 +26,7 @@
     "node-cron": "^3.0.0",
     "node-docker-api": "^1.1.22",
     "nodemon": "^2.0.14",
+    "redis": "^4.0.0",
     "socket.io": "^4.3.1",
     "systeminformation": "^5.9.9",
     "ts-node": "^10.4.0",
@@ -44,6 +45,7 @@
     "@types/node": "^16.11.6",
     "@types/node-cron": "^3.0.0",
     "@types/pkg-dir": "^2.0.1",
+    "@types/redis": "^4.0.11",
     "@types/socket.io": "^3.0.2",
     "@types/systeminformation": "^3.54.1",
     "@types/winston": "^2.4.4"
