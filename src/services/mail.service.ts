@@ -10,7 +10,7 @@ export class MailService{
         const host:string = process.env.MAIL_HOST
         const port:number = parseInt(process.env.MAIL_PORT)
         const user:string = process.env.MAIL_USER
-        const pass:string = process.env.MAIL_PASSWORD
+        const pass:string = process.env.MAIL_PASSWORD 
 
         this.transporter = nodemailer.createTransport({
             host: host,

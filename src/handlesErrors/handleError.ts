@@ -24,6 +24,7 @@ export function HandleError(res:Response , error){
             message: 'خطایی پیش آمده، لطفا دوباره تلاش کنید.',
             data: null
         }
+        console.log(error);
         res.status(400).json(errObj)
     }
 }

@@ -5,6 +5,7 @@ import * as cors from 'cors'
 import {createConnection} from 'typeorm';
 import './cron';
 import { checkLanguage } from './middlewares/checkLang';
+import { checkDeviceId } from './middlewares/checkDeviceId';
 import {AuthController} from './controllers/auth.controller'
 
 
@@ -54,7 +55,8 @@ async function main(){
             bodyParser.json(),
             bodyParser.urlencoded({extended : false}),
             morgan(':method :url :status - :response-time ms'),
-            checkLanguage
+            checkLanguage,
+            checkDeviceId
         ]
     })
     app.listen() 
