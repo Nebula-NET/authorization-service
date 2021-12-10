@@ -15,6 +15,9 @@ export class Session extends BaseEntity{
 
     @Column({nullable: false})
     platform_version: string
+    
+    @Column({nullable: false})
+    device_id: string
 
     @Column({nullable: false})
     socket_id: string
