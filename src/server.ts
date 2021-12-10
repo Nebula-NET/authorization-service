@@ -5,6 +5,8 @@ import * as cors from 'cors'
 import {createConnection} from 'typeorm';
 import './cron';
 import { checkLanguage } from './middlewares/checkLang';
+import {AuthController} from './controllers/auth.controller'
+
 
 const { createLogger, format, transports } = require("winston");
 const { combine, splat, timestamp, printf } = format;
@@ -45,7 +47,7 @@ async function main(){
     const app = new App({
         port: process.env.PORT ? parseInt(process.env.PORT) : 5000,
         controllers: [
-            
+            new AuthController()
         ],
         middleWares: [
             cors(),

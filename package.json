@@ -30,6 +30,7 @@
     "node-docker-api": "^1.1.22",
     "nodemailer": "^6.7.2",
     "nodemon": "^2.0.14",
+    "otp-generator": "^4.0.0",
     "redis": "^4.0.0",
     "socket.io": "^4.3.1",
     "stellar-sdk": "^9.1.0",
