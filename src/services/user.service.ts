@@ -23,7 +23,7 @@ export class UserService{
         return user
     }
 
-    public async createUser(data: registerUserDTO):Promise<User>{
+    public async create(data: registerUserDTO):Promise<User>{
         let user: User = new User();
         user.email = data.email;
         user.email_verified = true;
@@ -33,5 +33,7 @@ export class UserService{
 
         return user
     }
+
+
 
 }
