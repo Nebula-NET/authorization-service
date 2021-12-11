@@ -13,6 +13,7 @@ import * as jwt from "jsonwebtoken";
 import {v4 as UUID} from 'uuid'
 import { IcreateSession } from "interfaces/session.interface";
 import { logger } from "server";
+import {apiLimiter} from './../middlewares/rateLimit'
 
 export class AuthController{
     public path: String = "/";
@@ -33,8 +34,8 @@ export class AuthController{
     }
 
     private intialRouts(){
-        this.router.post('/login', (req, res)=>this.login(req, res));
-        this.router.post('/send-otp', (req, res)=>this.sentOtp(req, res));
+        this.router.post('/login', apiLimiter , (req, res)=>this.login(req, res));
+        this.router.post('/send-otp', apiLimiter , (req, res)=>this.sentOtp(req, res));
     }
 
     public async login(req: Request, res:Response){

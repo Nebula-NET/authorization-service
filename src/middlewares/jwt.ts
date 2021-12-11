@@ -12,13 +12,13 @@ export async function verifyUser(req: Request, res: Response, next: NextFunction
         let token = req.headers['authorization']
         let deviceId: string|any = req.headers['device-id'];
         if(!token){
-            throw new Exception(401, 'شما دسترسی لازم برای انجام این عنملیات را ندارید');
+            throw new Exception(401, 'شما دسترسی لازم برای انجام این عملیات را ندارید');
         }else{
             token= token.split(' ')[1];
         }
         let session: Session = await sessionService.findByDeviceId(deviceId);
         if(!session){
-            throw new Exception(401, 'شما دسترسی لازم برای انجام این عنملیات را ندارید');
+            throw new Exception(401, 'شما دسترسی لازم برای انجام این عملیات را ندارید');
         }
         const tokenPayload: any = jsonWebToken.verify(token , session.jwt_secret);        
         req.header['user-id'] = tokenPayload.id 
