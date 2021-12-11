@@ -7,6 +7,7 @@ import './cron';
 import { checkLanguage } from './middlewares/checkLang';
 import { checkDeviceId } from './middlewares/checkDeviceId';
 import {AuthController} from './controllers/auth.controller'
+import {FederationController} from './controllers/fedration.controller'
 
 
 const { createLogger, format, transports } = require("winston");
@@ -48,7 +49,8 @@ async function main(){
     const app = new App({
         port: process.env.PORT ? parseInt(process.env.PORT) : 5000,
         controllers: [
-            new AuthController()
+            new AuthController(),
+            new FederationController()
         ],
         middleWares: [
             cors(),
