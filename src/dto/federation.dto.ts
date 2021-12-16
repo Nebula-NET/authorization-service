@@ -3,14 +3,10 @@ import { IResponse } from './../interfaces/response.interface';
 
 export class newFederationDTO{
     constructor(data:any){
-        this.email = data.email;
         this.publickey = data.publickey
         this.signature = data.signature
     }
 
-    @IsNotEmpty({message: 'ایمیل خود را وارد کنید'})
-    @IsEmail()
-    email: string;
 
     @IsNotEmpty({message: 'کلید عمومی خود را وارد کنید'})
     publickey: string;

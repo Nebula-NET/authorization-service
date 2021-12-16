@@ -6,7 +6,8 @@ import * as StellarSdk from 'stellar-sdk'
 import { UserService } from './../services/user.service';
 import { User } from './../entities/user.entity';
 import { FederationService } from './../services/federation.service';
-import { IResponse } from 'interfaces/response.interface';
+import { IResponse } from './../interfaces/response.interface';
+import { apiLimiter } from './../middlewares/rateLimit';
 export class FederationController{
     public path: String = "/federation";
 	public router = Router();
@@ -21,7 +22,7 @@ export class FederationController{
 
 
     private initalRoute(){
-        this.router.post('/', verifyUser, (req, res) => this.newFederation(req, res))
+        this.router.post('/', apiLimiter , verifyUser, (req, res) => this.newFederation(req, res))
     }
 
 
@@ -42,19 +43,19 @@ export class FederationController{
 		}
 
         try {
-            let user: User = await this.userService.findById(userId);
+            let user: User = await this.userService.findById(userId);            
             let keypair = StellarSdk.Keypair.fromPublicKey(data.publickey)
             let sigResult = StellarSdk.verify(Buffer.from(user.email, 'utf-8'), Buffer.from(data.signature, 'base64'), keypair.rawPublicKey())
             if(!sigResult){
                 throw new Exception(400, 'امضای حساب صحیح نمی باشد')
             }
-
             let federation = await this.federationService.findByPublickey(data.publickey);
-
-            if(federation){
-
-            }else{
+            
+            if(!federation){
                 federation = await this.federationService.create({publickey: data.publickey, user: user})
+            }
+            if(federation.user.id !== user.id){
+                federation = await this.federationService.updateOwner(federation.id, user);
             }
             
             let response: IResponse = {
