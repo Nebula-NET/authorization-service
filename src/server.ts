@@ -18,7 +18,7 @@ require('dotenv').config()
 async function main(){        
 
     await createConnection({
-        "type": "mysql",
+        "type": "postgres",
         "host": process.env.DATABASE_HOST,
         "port": parseInt(process.env.DATABASE_PORT),
         "username": process.env.DATABASE_USERNAME,
