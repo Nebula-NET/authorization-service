@@ -11,7 +11,7 @@ import { apiLimiter } from './../middlewares/rateLimit';
 
 const StellarSdk = require('stellar-sdk')
 export class FederationController{
-    public path: String = "/federation";
+    public path: String = "/authorization/federation";
 	public router = Router();
     private userService: UserService
     private federationService: FederationService

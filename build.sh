@@ -11,5 +11,4 @@ npm run build
 export IMAGE_NAME=nebula/authorization-service:$1
 docker build . --no-cache -t $IMAGE_NAME
 docker tag $IMAGE_NAME repository.nebulanet.ir/$IMAGE_NAME
-#docker push repository.nebulanet.ir/$IMAGE_NAME
-#CREATE DATABASE $APP_DB_NAME;
+docker push repository.nebulanet.ir/$IMAGE_NAME

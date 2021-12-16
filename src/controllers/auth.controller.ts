@@ -18,7 +18,7 @@ import { verifySerivce, verifyUser } from "./../middlewares/jwt";
 import { FederationService } from "./../services/federation.service";
 
 export class AuthController{
-    public path: String = "/";
+    public path: String = "/authorization";
 	public router = Router();
 
     private userService: UserService
