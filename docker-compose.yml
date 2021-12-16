@@ -1,0 +1,35 @@
+version: "3"
+services: 
+    app: 
+      image: "nebula/authorization-service:v1.0.0"
+      ports:
+        - "6000:5000"
+      environment:
+        PORT: 5000
+        DATABASE_HOST: db
+        DATABASE_PORT: 5432
+        DATABASE_NAME: postgres
+        DATABASE_USERNAME: postgres
+        DATABASE_PASSWORD: postgres
+        MAIL_HOST: smtp.logcenter.ir
+        MAIL_PORT: 587
+        MAIL_USER: 'no-reply@logcenter.ir'
+        MAIL_PASSWORD: '123qazwsx##'
+        REDIS_HOST: redis
+        REDIS_PORT: 6379
+      depends_on:
+        - db
+        - redis
+    redis:
+      image: "redis:alpine"
+    
+    db:
+      image: postgres
+      environment:
+        POSTGRES_PASSWORD: postgres
+
+        
+
+
+
+
