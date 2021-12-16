@@ -21,7 +21,7 @@ export async function verifyUser(req: Request, res: Response, next: NextFunction
             throw new Exception(401, 'شما دسترسی لازم برای انجام این عملیات را ندارید');
         }
         const tokenPayload: any = jsonWebToken.verify(token , session.jwt_secret);        
-        req.header['user-id'] = tokenPayload.id 
+        req.headers['user-id'] = tokenPayload.id 
 
         next()
     } catch (error) {
