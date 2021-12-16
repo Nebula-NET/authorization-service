@@ -21,6 +21,9 @@ export class User extends BaseEntity{
     @Column({nullable: false , type: 'boolean' , default: true})
     active: boolean
 
+    @Column({nullable: false , type: 'boolean' , default: false})
+    service: boolean
+
     @Column({nullable: false , type: 'timestamp'})
     created_at: Date
 } 

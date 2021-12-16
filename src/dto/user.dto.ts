@@ -27,7 +27,37 @@ export class registerUserDTO{
             return null
         } 
 
+    }
+}
 
+export class checkUserTokenDTO{
+    constructor(data:any){
+        this.device_id = data.device_id;
+        this.token = data.token
+        this.publickey = data.publickey
+    }
+
+    @IsNotEmpty({message: 'شناسه دستگاه نباید خالی باشد'})
+    device_id: string;
+
+    @IsNotEmpty({message: 'توکن نباید خالی باشد'})
+    token: string;
+
+    @IsNotEmpty({message: 'کلید عمومی نباید خالی باشد'})
+    publickey: string;
+
+    public async validate():Promise<IResponse | null>{
+        let errors = await validate(this);            
+        if(errors.length > 0){
+          const resData: IResponse = {
+              success: false,
+              message: errors[0].constraints[Object.keys(errors[0].constraints)[0]],
+              data: errors[0]
+          }
+          return resData
+        } else {
+            return null
+        } 
 
     }
 }
