@@ -2,12 +2,14 @@ import { newFederationDTO } from './../dto/federation.dto';
 import {Router, Request, Response} from 'express'
 import { verifyUser } from './../middlewares/jwt';
 import { Exception, HandleError } from "./../handlesErrors/handleError";
-import * as StellarSdk from 'stellar-sdk'
+// import * as StellarSdk from 'stellar-sdk'
 import { UserService } from './../services/user.service';
 import { User } from './../entities/user.entity';
 import { FederationService } from './../services/federation.service';
 import { IResponse } from './../interfaces/response.interface';
 import { apiLimiter } from './../middlewares/rateLimit';
+
+const StellarSdk = require('stellar-sdk')
 export class FederationController{
     public path: String = "/federation";
 	public router = Router();

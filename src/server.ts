@@ -10,17 +10,7 @@ import {AuthController} from './controllers/auth.controller'
 import {FederationController} from './controllers/fedration.controller'
 
 
-const { createLogger, format, transports } = require("winston");
-const { combine, splat, timestamp, printf } = format;
-const myFormat = printf(({ level, message, timestamp, ...metadata }) => {
-    let msg = `[${level}] ${message} `;
-    return msg;
-});
-  
-export const logger = createLogger({
-    format: combine(format.colorize(), splat(), timestamp(), myFormat),
-    transports: [new transports.Console({ level: "info" })],
-});
+
   
 
 require('dotenv').config()
