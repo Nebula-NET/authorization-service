@@ -19,9 +19,9 @@ export class RedisService{
         })()
     }
 
-    public async set(key: string, value: string){
+    public async set(key: string, value: string, ex:number = 120){
         await this.redisClient.set(key, value, {
-            EX: 120
+            EX: ex
         })
     }
 

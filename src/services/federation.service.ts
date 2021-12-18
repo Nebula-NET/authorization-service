@@ -1,6 +1,5 @@
 import { Federation } from "./../entities/federation.entity";
 import { getRepository } from "typeorm";
-import { registerUserDTO } from "./../dto/user.dto";
 import { IcreateFederation } from "./../interfaces/federation.interface";
 import { User } from "./../entities/user.entity";
 

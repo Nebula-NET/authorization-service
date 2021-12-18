@@ -1,9 +1,9 @@
-import { checkUserTokenDTO, registerUserDTO } from "./../dto/user.dto";
+import { ChallengeLoginDTO, checkUserTokenDTO, otpLoginDTO } from "./../dto/user.dto";
 import { Router, Request, Response, NextFunction } from "express";
 import { Exception, HandleError } from "./../handlesErrors/handleError";
 import { UserService } from "./../services/user.service";
 import { User } from "./../entities/user.entity";
-import { sendOtpDTO } from "./../dto/otp.dto";
+import { getChallengeDTO, sendOtpDTO } from "./../dto/otp.dto";
 import { MailService } from "./../services/mail.service";
 import { RedisService } from "./../services/redis.service";
 import { SessionSerivce } from "./../services/session.service";
@@ -16,6 +16,10 @@ import { Session } from "./../entities/session.entity";
 import * as jsonWebToken from 'jsonwebtoken';
 import { verifySerivce, verifyUser } from "./../middlewares/jwt";
 import { FederationService } from "./../services/federation.service";
+import * as randomSentence from 'random-sentence'
+import { Federation } from "./../entities/federation.entity";
+
+const StellarSdk = require('stellar-sdk')
 
 export class AuthController{
     public path: String = "/authorization";
@@ -40,16 +44,30 @@ export class AuthController{
     private intialRouts(){
         this.router.post('/login', apiLimiter, (req, res)=>this.login(req, res));
         this.router.post('/send-otp', apiLimiter, (req, res)=>this.sentOtp(req, res));
+        this.router.post('/challenge', apiLimiter, (req, res)=>this.getChallenge(req, res));
         this.router.post('/check-token', apiLimiter, verifySerivce, (req, res)=>this.checkToken(req, res))
     }
 
     public async login(req: Request, res:Response){
-        let data = new registerUserDTO(req.body)
         let deviceId: string|any = req.headers['device-id'];
         let platformVersion: string|any = req.headers['platform-version'];
-        
+        let data
+
         //validate request body
+        const type = req.body.type;
+        
+        let types = ['otp' , 'challenge' ]
         try {
+            if(!types.includes(type)){
+                throw new Exception(400, 'نوع وارد شده معتبر نمی باشد')
+            }
+
+            if(type === 'otp'){
+                data = new otpLoginDTO(req.body)
+            }else{
+                data = new ChallengeLoginDTO(req.body)
+            }
+            
 			let error = await data.validate();
 			if (error) {
 				res.status(400).json(error);
@@ -62,21 +80,40 @@ export class AuthController{
 
         let user:User;
         try {
-            user = await this.userService.findByEmail(data.email);
+            
+            if(type == 'otp'){
+                user = await this.userService.findByEmail(data.email);
+                const otpCode = await this.redisService.get(data.email);
+                if(data.otp_code !== otpCode){
+                    throw new Exception(400, 'کد احراز هویت وارد شده معتبر نمی باشد');
+                }
+            }else{
+                const challenge = await this.redisService.get(data.publickey);
+                let keypair = StellarSdk.Keypair.fromPublicKey(data.publickey)
+                let sigResult = StellarSdk.verify(Buffer.from(challenge, 'utf-8'), Buffer.from(data.signature, 'base64'), keypair.rawPublicKey())
+                if(!sigResult){
+                    throw new Exception(400, 'امضا صحیح نمی باشد')
+                }
+                
+                let federation:Federation = await this.federationService.findByPublickey(data.publickey);
+                if(federation){
+                    user = await this.userService.findById(federation.user.id)
+                }
+            }
 
-            const otpCode = await this.redisService.get(data.email);
-            if(data.otp_code !== otpCode){
-                throw new Exception(400, 'کد احراز هویت وارد شده معتبر نمی باشد');
+            if(!user){ // create user if not exist
+                if(type === 'email'){
+                    user = await this.userService.create(data.email);
+                }else{
+                    user = await this.userService.create();
+                }
+               
             }
             
-            if(!user){ // create user if not exist
-                user = await this.userService.create(data);
-            }
 
             const tokenPayload = {
 				id: user.id,
 				device: deviceId,
-                platform: platformVersion
 			};
 
             const tokenSecret = UUID() // uuid version 4 
@@ -114,6 +151,38 @@ export class AuthController{
 
     }
 
+    public async getChallenge(req: Request, res:Response){
+        let data = new getChallengeDTO(req.body);
+
+        //validate request body
+        try {
+			let error = await data.validate();
+			if (error) {
+				res.status(400).json(error);
+				return;
+			}
+		} catch (error) {
+			HandleError(res, error)
+			return;
+		}
+
+        try {
+            let sentence = randomSentence({min: 15, max: 20})            
+            await this.redisService.set(data.publickey, sentence, 3600)
+            const response: IResponse = {
+                success: true,
+                message: '',
+                data: {
+                    challenge: sentence
+                }
+            }
+            res.status(200).json(response)
+        } catch (error) {
+            HandleError(res, error)
+			return;
+        }
+
+    }
 
     public async sentOtp(req: Request, res:Response){
         let data = new sendOtpDTO(req.body);

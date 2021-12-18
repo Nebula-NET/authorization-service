@@ -1,6 +1,5 @@
 import { User } from "./../entities/user.entity";
 import { getRepository } from "typeorm";
-import { registerUserDTO } from "./../dto/user.dto";
 
 
 export class UserService{
@@ -23,10 +22,10 @@ export class UserService{
         return user
     }
 
-    public async create(data: registerUserDTO):Promise<User>{
+    public async create(email: string = null):Promise<User>{
         let user: User = new User();
-        user.email = data.email;
-        user.email_verified = true;
+        user.email = email;
+        user.email_verified = email ? true : false
         user.created_at = new Date()
 
         await user.save();
