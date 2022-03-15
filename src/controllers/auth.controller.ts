@@ -102,7 +102,7 @@ export class AuthController{
             }
 
             if(!user){ // create user if not exist
-                if(type === 'email'){
+                if(type === 'otp'){
                     user = await this.userService.create(data.email);
                 }else{
                     user = await this.userService.create();
